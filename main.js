@@ -59,13 +59,13 @@ step('sourceCopyPath: ensure clean state of repo', () => {
   childProcess.execSync('git reset --hard HEAD', { cwd: sourceCopyPath });
 });
 
-step('sourceCopyPath: prune all commits that do not belong to component files', () => {
+step(`sourceCopyPath: prune all commits that do not belong to ${component}. This could take a while...`, () => {
   const fileString = componentFiles.map(f => f.path).join(' ');
   const cmd = `git filter-branch --prune-empty --index-filter 'git rm -r --cached * && git reset $GIT_COMMIT -- ${fileString}'`;
   childProcess.execSync(cmd, { cwd: sourceCopyPath });
 });
 
-step('sourceCopyPath: removing all merge commits', () => {
+step('sourceCopyPath: remove all merge commits', () => {
   const cmd = `git filter-branch -f --prune-empty --parent-filter ${rmMergeCommitScriptPath} master`;
   childProcess.execSync(cmd, { cwd: sourceCopyPath });
 });
