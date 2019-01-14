@@ -4,7 +4,8 @@
   "description": "Extract components from Ember app into an Ember addon",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "extract": "./main.js"
   },
   "repository": {
     "type": "git",
