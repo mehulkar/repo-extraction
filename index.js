@@ -62,6 +62,6 @@ step('copy source to sourceCopyPath for destructive changes', () => {
   childProcess.execSync('git reset --hard HEAD', { cwd: sourceCopyPath });
 });
 
-step('extract componentFiles', () => {
+step(`extract ${componentFiles}`, () => {
   extractFilesWithHistory(sourceCopyPath, addonPath, componentFiles);
 });
