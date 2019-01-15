@@ -44,10 +44,10 @@ const componentFiles = [
   { name: 'unit test', path: path.join('tests', 'unit', 'components', `${component}-test.js`) },
 ];
 
-step(`source: ensure ${source} exists and is an ember app`, () => {
+step(`ensure ${source} exists and is an ember app`, () => {
   const { result: isEmber, missingFiles} = isEmberApp(sourceAbsolutePath);
   if (isEmber) {
-    console.log('--> passed check'.grey);
+    console.log('--> passed check'.green);
   } else {
     console.error(`--> Error: ${sourceAbsolutePath} is not an ember app. Missing ${missingFiles}`.red);
   }
@@ -65,6 +65,6 @@ step('copy source to sourceCopyPath for destructive changes', () => {
   childProcess.execSync('git reset --hard HEAD', { cwd: sourceCopyPath });
 });
 
-step(`extract ${componentFiles}`, () => {
+step(`extract ${componentFiles.map(x => x.name)}`, () => {
   extractFilesWithHistory(sourceCopyPath, addonPath, componentFiles);
 });
