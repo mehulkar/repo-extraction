@@ -24,13 +24,16 @@ if (!yargs.source || !yargs.component) {
   process.exit(1);
 }
 
+console.log(yargs);
+
 const { source, component } = yargs;
 const sourceAbsolutePath = path.resolve(source);
 const sourceCopyPath = path.join(sourceAbsolutePath, '..', `${path.basename(sourceAbsolutePath)}-copy`);
 
-const addonName = `${component}-addon`;
-const addonParentDirectory = path.join(sourceCopyPath, '..');
-const addonPath = path.join(addonParentDirectory, addonName);
+let addonName = yargs.addon_name || `${component}-addon`;
+
+const addonPath = path.join(sourceCopyPath, '..', addonName);
+const addonParentDirectory = path.join(addonPath, '..');
 
 const componentFiles = [
   { name: 'js', path: path.join('app', 'components', `${component}.js`) },
