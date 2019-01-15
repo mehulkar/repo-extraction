@@ -50,12 +50,12 @@ step(`source: ensure ${source} exists and is an ember app`, () => {
   }
 });
 
-step(`addon: create new addon at ${addonPath}`, () => {
+step(`create new addon at ${addonPath}`, () => {
   deleteIfDir(addonPath);
   childProcess.execSync(`ember addon ${addonName} --skip-npm`, { cwd: addonParentDirectory })
 });
 
-step('source: copy source to sourceCopyPath for destructive changes', () => {
+step('copy source to sourceCopyPath for destructive changes', () => {
   deleteIfDir(sourceCopyPath);
   childProcess.execSync(`cp -R ${source} ${sourceCopyPath}`);
   console.log('---> ensure clean state of repo'.grey);
