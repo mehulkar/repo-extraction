@@ -8,7 +8,8 @@ const isEmberApp = require('./lib/is-ember');
 const deleteIfDir = require('./lib/delete-if');
 const extractFilesWithHistory = require('./lib/extract-with-history');
 
-function usage() {
+function usage(message) {
+  console.error(`Error: ${message}`.red);
   console.error('USAGE: ./index [--source <path>] [--component <value>] [--addon-name <value>] [--output <path>] [--config <path>]'.red);
 }
 
@@ -46,8 +47,16 @@ const sourceCopyPath = path.join(sourceAbsolutePath, '..', `${path.basename(sour
 
 const addonParentDirectory = path.join(output, '..');
 
-if (!source || !component || output) {
-  usage();
+if (!source) {
+  usage('Missing source');
+  process.exit(1);
+}
+if (!component) {
+  usage('Missing component');
+  process.exit(1);
+}
+if (!output) {
+  usage('Missing output');
   process.exit(1);
 }
 
