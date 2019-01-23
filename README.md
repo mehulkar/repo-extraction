@@ -5,7 +5,7 @@ A way to extract ember addons from existing Ember apps and maintaining source co
 ## Instructions
 
 ```bash
-npm run extract -- --source [path/to/ember-app/] --component [name of component]
+npm run extract -- [--source <path>] [--component <value>] [--addon-name <value>] [--output <path>] [--config <path>]
 ```
 
 ### Example
