@@ -9,7 +9,7 @@ const extractFilesWithHistory = require('./lib/extract-with-history');
 
 function usage() {
   console.log('USAGE:');
-  console.log('./main --source path/to/repo/source --component foo-bar\n');
+  console.log('./main --source path/to/repo/source --component foo-bar --addon-name my-new-adodn \n');
 }
 
 function step(message, cb) {
@@ -30,7 +30,7 @@ const { source, component } = yargs;
 const sourceAbsolutePath = path.resolve(source);
 const sourceCopyPath = path.join(sourceAbsolutePath, '..', `${path.basename(sourceAbsolutePath)}-copy`);
 
-let addonName = yargs.addon_name || `${component}-addon`;
+let addonName = yargs['addon-name'] || `${component}-addon`;
 
 const addonPath = path.join(sourceCopyPath, '..', addonName);
 const addonParentDirectory = path.join(addonPath, '..');
