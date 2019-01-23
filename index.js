@@ -61,8 +61,13 @@ step(`create new addon at ${addonPath}`, () => {
 step('copy source to sourceCopyPath for destructive changes', () => {
   deleteIfDir(sourceCopyPath);
   childProcess.execSync(`cp -R ${source} ${sourceCopyPath}`);
-  console.log('---> ensure clean state of repo'.grey);
+  console.log('---> ensure clean state of repo and checkout master branch'.grey);
   childProcess.execSync('git reset --hard HEAD', { cwd: sourceCopyPath });
+  childProcess.execSync('git checkout master', { cwd: sourceCopyPath });
+  console.log('---> delete all tags'.grey);
+  childProcess.execSync('git tag | xargs git tag -d', { cwd: sourceCopyPath });
+  console.log('---> delete all branches except master'.grey);
+  childProcess.execSync('git branch | grep -v "master" | xargs git branch -D', { cwd: sourceCopyPath });
 });
 
 step(`extract ${componentFiles.map(x => x.name)}`, () => {
