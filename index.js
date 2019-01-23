@@ -34,10 +34,6 @@ if (yargs.config) {
   addonName = jsonConfig.addonName;
   output = jsonConfig.output;
 } else {
-  if (!yargs.source || !yargs.component || yargs.output) {
-    usage();
-    process.exit(1);
-  }
   source = yargs.source;
   component = yargs.component;
   output = yargs.output;
@@ -49,6 +45,11 @@ const sourceAbsolutePath = path.resolve(source);
 const sourceCopyPath = path.join(sourceAbsolutePath, '..', `${path.basename(sourceAbsolutePath)}-copy`);
 
 const addonParentDirectory = path.join(output, '..');
+
+if (!source || !component || output) {
+  usage();
+  process.exit(1);
+}
 
 step(`ensure ${source} exists and is an ember app`, () => {
   const { result: isEmber, missingFiles} = isEmberApp(sourceAbsolutePath);
