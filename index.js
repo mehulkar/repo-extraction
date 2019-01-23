@@ -71,7 +71,8 @@ step(`ensure ${source} exists and is an ember app`, () => {
 
 step(`create new addon at ${output}`, () => {
   deleteIfDir(output);
-  childProcess.execSync(`ember addon ${addonName} --skip-npm`, { cwd: addonParentDirectory })
+  const outputFolder = path.basename(output);
+  childProcess.execSync(`ember addon ${outputFolder} --skip-npm`, { cwd: addonParentDirectory })
 });
 
 step('copy source to sourceCopyPath for destructive changes', () => {
