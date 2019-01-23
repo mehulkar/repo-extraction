@@ -31,7 +31,7 @@ if (yargs.config) {
   source = jsonConfig.source;
   component = jsonConfig.component;
   const additionalFiles = jsonConfig.additionalFiles || [];
-  componentFiles = [defaultFilesForComponent(component), ...additionalFiles];
+  componentFiles = [...defaultFilesForComponent(component), ...additionalFiles];
   addonName = jsonConfig.addonName;
   output = jsonConfig.output;
 } else {
