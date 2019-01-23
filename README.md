@@ -28,3 +28,23 @@ npm run extract -- --source ../tmp-extraction-playground/test-app --component fo
 
     The name of the new package to create. (Will be used with `ember addon <addon-name>`).
     Defaults to `component` argument suffexied with `-addon` (e.g. `foo-bar-addon`).
+
+4. `--config` (optional)
+
+    If provided, the other arguments are ignored. Should be a JSON file with the following structure:
+
+    ```json
+    {
+      "source": "/some/path",
+      "component": "foo-bar",
+      "addonName": "my-package-name",
+      "additionalFiles": [
+        "app/sub/file1",
+        "app/sub/file2",
+        "app/sub/file3",
+        "app/sub/file4",
+      ]
+    }
+    ```
+
+    `additionalFiles` should start with "app/" (a relative path within the source directory).
