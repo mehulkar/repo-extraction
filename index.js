@@ -19,7 +19,7 @@ function step(message, cb) {
   console.log('\n');
 }
 
-let source, component, componentFiles, addonName, output;
+let source, component, filesToExtract, addonName, output;
 
 if (yargs.config) {
   const configFilePath = path.resolve(yargs.config);
@@ -31,14 +31,14 @@ if (yargs.config) {
   source = jsonConfig.source;
   component = jsonConfig.component;
   const additionalFiles = jsonConfig.additionalFiles || [];
-  componentFiles = [...defaultFilesForComponent(component), ...additionalFiles];
+  filesToExtract = [...defaultFilesForComponent(component), ...additionalFiles];
   addonName = jsonConfig.addonName;
   output = jsonConfig.output;
 } else {
   source = yargs.source;
   component = yargs.component;
   output = yargs.output;
-  componentFiles = defaultFilesForComponent(component);
+  filesToExtract = defaultFilesForComponent(component);
   addonName = yargs['addon-name'] || `${component}-addon`;
 }
 
@@ -87,8 +87,8 @@ step('copy source to sourceCopyPath for destructive changes', () => {
   childProcess.execSync('git branch | grep -v "master" | xargs git branch -D', { cwd: sourceCopyPath });
 });
 
-step(`extract ${componentFiles.map(x => x.name)}`, () => {
-  extractFilesWithHistory(sourceCopyPath, output, componentFiles);
+step(`extract ${filesToExtract.map(x => x.name)}`, () => {
+  extractFilesWithHistory(sourceCopyPath, output, filesToExtract);
 });
 
 
