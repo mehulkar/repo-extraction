@@ -9,7 +9,7 @@ const deleteIfDir = require('./lib/delete-if');
 const extractFilesWithHistory = require('./lib/extract-with-history');
 
 function usage() {
-  console.error('USAGE: ./index [--source <path>] [--component <value>] [--addon-name <value>] [--config <path>]'.red);
+  console.error('USAGE: ./index [--source <path>] [--component <value>] [--addon-name <value>] [--output <path>] [--config <path>]'.red);
 }
 
 function step(message, cb) {
@@ -18,7 +18,7 @@ function step(message, cb) {
   console.log('\n');
 }
 
-let source, component, componentFiles, addonName;
+let source, component, componentFiles, addonName, output;
 
 if (yargs.config) {
   const configFilePath = path.resolve(yargs.config);
@@ -32,22 +32,23 @@ if (yargs.config) {
   const additionalFiles = jsonConfig.additionalFiles || [];
   componentFiles = [defaultFilesForComponent(component), ...additionalFiles];
   addonName = jsonConfig.addonName;
+  output = jsonConfig.output;
 } else {
-  if (!yargs.source || !yargs.component) {
+  if (!yargs.source || !yargs.component || yargs.output) {
     usage();
     process.exit(1);
   }
   source = yargs.source;
   component = yargs.component;
+  output = yargs.output;
   componentFiles = defaultFilesForComponent(component);
   addonName = yargs['addon-name'] || `${component}-addon`;
 }
 
 const sourceAbsolutePath = path.resolve(source);
 const sourceCopyPath = path.join(sourceAbsolutePath, '..', `${path.basename(sourceAbsolutePath)}-copy`);
-const addonPath = path.join(sourceCopyPath, '..', addonName);
-const addonParentDirectory = path.join(addonPath, '..');
 
+const addonParentDirectory = path.join(output, '..');
 
 step(`ensure ${source} exists and is an ember app`, () => {
   const { result: isEmber, missingFiles} = isEmberApp(sourceAbsolutePath);
@@ -58,8 +59,8 @@ step(`ensure ${source} exists and is an ember app`, () => {
   }
 });
 
-step(`create new addon at ${addonPath}`, () => {
-  deleteIfDir(addonPath);
+step(`create new addon at ${output}`, () => {
+  deleteIfDir(output);
   childProcess.execSync(`ember addon ${addonName} --skip-npm`, { cwd: addonParentDirectory })
 });
 
@@ -76,7 +77,7 @@ step('copy source to sourceCopyPath for destructive changes', () => {
 });
 
 step(`extract ${componentFiles.map(x => x.name)}`, () => {
-  extractFilesWithHistory(sourceCopyPath, addonPath, componentFiles);
+  extractFilesWithHistory(sourceCopyPath, output, componentFiles);
 });
 
 
