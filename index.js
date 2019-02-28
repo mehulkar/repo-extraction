@@ -24,7 +24,7 @@ let source, component, filesToExtract, addonName, output;
 if (yargs.config) {
   const configFilePath = path.resolve(yargs.config);
   if (!fs.existsSync(configFilePath)) {
-    usage();
+    usage(`${configFilePath} does not exist`);
     process.exit(1);
   }
   const jsonConfig = JSON.parse(fs.readFileSync(configFilePath));
