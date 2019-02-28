@@ -30,10 +30,16 @@ if (yargs.config) {
   const jsonConfig = JSON.parse(fs.readFileSync(configFilePath));
   source = jsonConfig.source;
   component = jsonConfig.component;
-  const additionalFiles = jsonConfig.additionalFiles || [];
-  filesToExtract = [...defaultFilesForComponent(component), ...additionalFiles];
-  addonName = jsonConfig.addonName;
+  const onlyFiles = jsonConfig.onlyFiles || [];
+  if (onlyFiles) {
+    filesToExtract = [...onlyFiles];
+  } else {
+    const additionalFiles = jsonConfig.additionalFiles || [];
+    filesToExtract = [...defaultFilesForComponent(component), ...additionalFiles];
+  }
+
   output = jsonConfig.output;
+  addonName = jsonConfig.addonName;
 } else {
   source = yargs.source;
   component = yargs.component;

@@ -44,12 +44,21 @@ npm run extract -- --source ../tmp-extraction-playground/test-app --component fo
       "addonName": "my-package-name",
       "output": "/some/path/for/new/addon",
       "additionalFiles": [
-        "app/sub/file1",
-        "app/sub/file2",
-        "app/sub/file3",
-        "app/sub/file4",
+        { "name": "file1", "path": "app/sub/file1" },
+        { "name": "file2", "path": "app/sub/file2" },
+        { "name": "file3", "path": "app/sub/file3" },
+        { "name": "file4", "path": "app/sub/file4" }
+      ],
+      "onlyFiles": [
+        { "name": "file1", "path": "app/some/other/file1" },
+        { "name": "file2", "path": "app/some/other/file2" },
+        { "name": "file3", "path": "app/some/other/file3" },
+        { "name": "file4", "path": "app/some/other/file4" }
       ]
     }
     ```
 
-    `additionalFiles` should start with "app/" (a relative path within the source directory).
+    `additionalFiles` and `onlyFiles` should start with "app/" (a relative path within the
+    source directory).
+
+    If `onlyFiles` is provided, `component` and `additionalFiles` will be ignored.
