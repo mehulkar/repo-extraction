@@ -57,8 +57,8 @@ if (!source) {
   usage('Missing source');
   process.exit(1);
 }
-if (!component) {
-  usage('Missing component');
+if (!component && !filesToExtract.length) {
+  usage('Please provide component name or `onlyFiles` argument in config file');
   process.exit(1);
 }
 if (!output) {
