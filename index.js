@@ -9,6 +9,7 @@ const isEmberApp = require('./lib/is-ember');
 const deleteIfDir = require('./lib/delete-if');
 const repoFilter = require('./lib/repo-filter');
 const repoMerge = require('./lib/repo-merge');
+const repoSafeCopy = require('./lib/repo-safe-copy');
 
 function usage(message) {
   console.error(`Error: ${message}`.red);
@@ -82,15 +83,7 @@ step(`create new addon at ${output}`, () => {
 });
 
 step('copy source to sourceCopyPath for destructive changes', () => {
-  deleteIfDir(sourceCopyPath);
-  childProcess.execSync(`cp -R ${source} ${sourceCopyPath}`);
-  console.log('---> ensure clean state of repo and checkout master branch'.grey);
-  childProcess.execSync('git reset --hard HEAD', { cwd: sourceCopyPath });
-  childProcess.execSync('git checkout master', { cwd: sourceCopyPath });
-  console.log('---> delete all tags'.grey);
-  childProcess.execSync('git tag | xargs git tag -d', { cwd: sourceCopyPath });
-  console.log('---> delete all branches except master'.grey);
-  childProcess.execSync('git branch | grep -v "master" | xargs git branch -D', { cwd: sourceCopyPath });
+  repoSafeCopy(source, sourceCopyPath);
 });
 
 step(`extract ${filesToExtract.map(x => x.name)}`, () => {
