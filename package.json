@@ -1,5 +1,5 @@
 {
-  "name": "extract-ember-addon",
+  "name": "@apple/repo-extraction",
   "version": "0.1.0",
   "description": "Extract components from Ember app into an Ember addon",
   "main": "index.js",
@@ -10,7 +10,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.pie.apple.com:mehulkar/extract-ember-addon.git"
+    "url": "git@github.pie.apple.com:mehulkar/repo-extraction.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.apple.com"
   },
   "keywords": [
     "ember"
