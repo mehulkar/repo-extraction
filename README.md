@@ -5,7 +5,7 @@ A tool to extract code out of a repo.
 ## Usage
 
 ```bash
-npm run extract -- [--config <path>]
+npx @apple/repo-extraction --config <path>
 ```
 
 ### Example
