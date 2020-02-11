@@ -5,8 +5,7 @@ const yargs = require('yargs').argv
 const path = require('path');
 const fs = require('fs');
 const childProcess = require('child_process');
-const isEmberApp = require('./lib/is-ember');
-const deleteIfDir = require('./lib/delete-if');
+const { safeDelete , isGitRepo } = require('./lib/utils');
 const repoFilter = require('./lib/repo-filter');
 const repoMerge = require('./lib/repo-merge');
 const repoSafeCopy = require('./lib/repo-safe-copy');
@@ -54,20 +53,21 @@ if (!files.length) {
 const source = new SourcePath(sourcePath);
 const output = new Path(outputPath);
 
-console.log(`ensure ${source.path} exists and is an ember app`);
-const { result: isEmber, missingFiles} = isEmberApp(source.path);
-if (isEmber) {
-  console.log('--> passed check'.green);
-} else {
-  console.error(`--> Error: ${source.path} is not an ember app. Missing ${missingFiles}`.red);
-}
-
 console.log(`create new addon at ${output.path}`);
-deleteIfDir(output.path);
+safeDelete(output.path);
 childProcess.execSync(`ember addon ${output.name} --skip-npm`, { cwd: output.parent })
 
 console.log('copy source to source.copyPath for destructive changes');
 repoSafeCopy(source, source.copyPath);
+
+console.log(`ensure ${source.path} exists and is an ember app`);
+if (!isGitRepo(source.path)) {
+  console.error(`${source.path} is not git repo.`.red);
+}
+
+if (!isGitRepo(output.path)) {
+  console.error(`${source.path} is not git repo.`.red);
+}
 
 console.log(`extract ${files.map(x => x.name)}`);
 repoFilter(source.copyPath, output, files);
