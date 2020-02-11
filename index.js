@@ -1,19 +1,18 @@
 #!/usr/bin/env node
 /* eslint-env node */
-require('colors');
 const yargs = require('yargs').argv
 const path = require('path');
 const fs = require('fs');
 const childProcess = require('child_process');
-const { safeDelete , isGitRepo } = require('./lib/utils');
+const { safeDelete, isGitRepo, log } = require('./lib/utils');
 const repoFilter = require('./lib/repo-filter');
 const repoMerge = require('./lib/repo-merge');
 const repoSafeCopy = require('./lib/repo-safe-copy');
 const { SourcePath, Path } = require('./lib/models');
 
 function usage(message) {
-  console.error(`Error: ${message}`.red);
-  console.error('USAGE: ./index [--config <path>]'.red);
+  log(`Error: ${message}`, 'error');
+  log('USAGE: ./index [--config <path>]', 'error');
 }
 
 if (!yargs.config) {
@@ -53,14 +52,14 @@ if (!files.length) {
 const source = new SourcePath(sourcePath);
 const output = new Path(outputPath);
 
-console.log(`create new addon at ${output.path}`);
+log(`create new addon at ${output.path}`);
 safeDelete(output.path);
 childProcess.execSync(`ember addon ${output.name} --skip-npm`, { cwd: output.parent })
 
-console.log('copy source to source.copyPath for destructive changes');
+log('copy source to source.copyPath for destructive changes');
 repoSafeCopy(source, source.copyPath);
 
-console.log(`ensure ${source.path} exists and is an ember app`);
+log(`ensure ${source.path} exists and is an ember app`);
 if (!isGitRepo(source.path)) {
   console.error(`${source.path} is not git repo.`.red);
 }
@@ -69,6 +68,6 @@ if (!isGitRepo(output.path)) {
   console.error(`${source.path} is not git repo.`.red);
 }
 
-console.log(`extract ${files.map(x => x.name)}`);
+log(`extract ${files.map(x => x.name)}`);
 repoFilter(source.copyPath, output, files);
 repoMerge(output, source.copyPath);
