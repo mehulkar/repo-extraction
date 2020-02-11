@@ -3,11 +3,8 @@
 const yargs = require('yargs').argv
 const path = require('path');
 const fs = require('fs');
-const childProcess = require('child_process');
-const { safeDelete, isGitRepo, log } = require('./lib/utils');
-const repoFilter = require('./lib/repo-filter');
-const repoMerge = require('./lib/repo-merge');
-const repoSafeCopy = require('./lib/repo-safe-copy');
+const { isGitRepo, log } = require('./lib/utils');
+const repoUtils = require('./lib/repo');
 const { SourcePath, Path } = require('./lib/models');
 
 function usage(message) {
@@ -52,22 +49,21 @@ if (!files.length) {
 const source = new SourcePath(sourcePath);
 const output = new Path(outputPath);
 
-log(`create new addon at ${output.path}`);
-safeDelete(output.path);
-childProcess.execSync(`ember addon ${output.name} --skip-npm`, { cwd: output.parent })
 
-log('copy source to source.copyPath for destructive changes');
-repoSafeCopy(source, source.copyPath);
+log('copy source for destructive changes');
+repoUtils.safeCopy(source, source.copyPath);
 
-log(`ensure ${source.path} exists and is an ember app`);
+log(`ensure ${source.path} is a git repo`);
 if (!isGitRepo(source.path)) {
-  console.error(`${source.path} is not git repo.`.red);
+  log(`${source.path} is not git repo`, 'error');
+  process.exit(1);
 }
 
 if (!isGitRepo(output.path)) {
-  console.error(`${source.path} is not git repo.`.red);
+  log(`${source.path} is not git repo`, 'error');
+  process.exit(1);
 }
 
 log(`extract ${files.length} files`);
-repoFilter(source.copyPath, output, files);
-repoMerge(output, source.copyPath);
+repoUtils.filter(source.copyPath, output, files);
+repoUtils.merge(output, source.copyPath);
