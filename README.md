@@ -1,4 +1,4 @@
-# Extract Ember Addon
+# Repo Extraction
 
 A tool to extract code out of a repo.
 
