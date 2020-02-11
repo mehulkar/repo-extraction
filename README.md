@@ -28,11 +28,6 @@ npm run extract -- --source ../tmp-extraction-playground/test-app --component fo
 
     The path to where the new addon should go.
 
-1. `--addon-name` (optional)
-
-    The name of the new package to create. (Will be used with `ember addon <addon-name>`).
-    Defaults to `component` argument suffexied with `-addon` (e.g. `foo-bar-addon`).
-
 1. `--config` (optional)
 
     If provided, the other arguments are ignored. Should be a JSON file with the following structure:
@@ -41,7 +36,6 @@ npm run extract -- --source ../tmp-extraction-playground/test-app --component fo
     {
       "source": "/some/path",
       "component": "foo-bar",
-      "addonName": "my-package-name",
       "output": "/some/path/for/new/addon",
       "additionalFiles": [
         { "name": "file1", "path": "app/sub/file1" },

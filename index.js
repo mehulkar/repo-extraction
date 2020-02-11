@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-env node */
 require('colors');
 const yargs = require('yargs').argv
 const path = require('path');
@@ -20,7 +21,7 @@ function step(message, cb) {
   console.log('\n');
 }
 
-let source, component, filesToExtract, addonName, output;
+let source, component, filesToExtract, output;
 
 if (yargs.config) {
   const configFilePath = path.resolve(yargs.config);
@@ -40,13 +41,11 @@ if (yargs.config) {
   }
 
   output = jsonConfig.output;
-  addonName = jsonConfig.addonName;
 } else {
   source = yargs.source;
   component = yargs.component;
   output = yargs.output;
   filesToExtract = defaultFilesForComponent(component);
-  addonName = yargs['addon-name'] || `${component}-addon`;
 }
 
 const sourceAbsolutePath = path.resolve(source);
