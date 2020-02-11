@@ -60,7 +60,8 @@ if (!isGitRepo(source.path)) {
 }
 
 if (!isGitRepo(output.path)) {
-  log(`${source.path} is not git repo`, 'error');
+  log(`${output.path} is not git repo. Creating`, 'warn');
+  repoUtils.create(output.path);
   process.exit(1);
 }
 
