@@ -10,95 +10,64 @@ const deleteIfDir = require('./lib/delete-if');
 const repoFilter = require('./lib/repo-filter');
 const repoMerge = require('./lib/repo-merge');
 const repoSafeCopy = require('./lib/repo-safe-copy');
+const { Source, Target } = require('./lib/models');
 
 function usage(message) {
   console.error(`Error: ${message}`.red);
-  console.error('USAGE: ./index [--source <path>] [--component <value>] [--output <path>] [--config <path>]'.red);
+  console.error('USAGE: ./index [--config <path>]'.red);
 }
 
-function step(message, cb) {
-  console.log(message.yellow);
-  cb();
-  console.log('\n');
+if (!yargs.config) {
+  usage('Missing config');
+  process.exit(1);
 }
 
-let source, component, filesToExtract, output;
-
-if (yargs.config) {
-  const configFilePath = path.resolve(yargs.config);
-  if (!fs.existsSync(configFilePath)) {
-    usage(`${configFilePath} does not exist`);
-    process.exit(1);
-  }
-  const jsonConfig = JSON.parse(fs.readFileSync(configFilePath));
-  source = jsonConfig.source;
-  component = jsonConfig.component;
-  const onlyFiles = jsonConfig.onlyFiles || [];
-  if (onlyFiles) {
-    filesToExtract = [...onlyFiles];
-  } else {
-    const additionalFiles = jsonConfig.additionalFiles || [];
-    filesToExtract = [...defaultFilesForComponent(component), ...additionalFiles];
-  }
-
-  output = jsonConfig.output;
-} else {
-  source = yargs.source;
-  component = yargs.component;
-  output = yargs.output;
-  filesToExtract = defaultFilesForComponent(component);
+const configFilePath = path.resolve(yargs.config);
+if (!fs.existsSync(configFilePath)) {
+  usage(`${configFilePath} does not exist`);
+  process.exit(1);
 }
 
-const sourceAbsolutePath = path.resolve(source);
-const sourceCopyPath = path.join(sourceAbsolutePath, '..', `${path.basename(sourceAbsolutePath)}-copy`);
+const config = JSON.parse(fs.readFileSync(configFilePath));
 
-const addonParentDirectory = path.join(output, '..');
+const {
+  source: sourcePath,
+  output: outputPath,
+  files = []
+} = config;
+
+const source = new Source(sourcePath);
+const output = new Target(outputPath);
 
 if (!source) {
   usage('Missing source');
   process.exit(1);
 }
-if (!component && !filesToExtract.length) {
-  usage('Please provide component name or `onlyFiles` argument in config file');
+if (!files.length) {
+  usage('Missing files config');
   process.exit(1);
 }
+
 if (!output) {
   usage('Missing output');
   process.exit(1);
 }
 
-step(`ensure ${source} exists and is an ember app`, () => {
-  const { result: isEmber, missingFiles} = isEmberApp(sourceAbsolutePath);
-  if (isEmber) {
-    console.log('--> passed check'.green);
-  } else {
-    console.error(`--> Error: ${sourceAbsolutePath} is not an ember app. Missing ${missingFiles}`.red);
-  }
-});
-
-step(`create new addon at ${output}`, () => {
-  deleteIfDir(output);
-  const outputFolder = path.basename(output);
-  childProcess.execSync(`ember addon ${outputFolder} --skip-npm`, { cwd: addonParentDirectory })
-});
-
-step('copy source to sourceCopyPath for destructive changes', () => {
-  repoSafeCopy(source, sourceCopyPath);
-});
-
-step(`extract ${filesToExtract.map(x => x.name)}`, () => {
-  repoFilter(sourceCopyPath, output, filesToExtract);
-  repoMerge(output, sourceCopyPath);
-});
-
-
-function defaultFilesForComponent(component) {
-  return [
-    { name: 'js', path: path.join('app', 'components', `${component}.js`) },
-    { name: 'hbs', path: path.join('app', 'templates', 'components', `${component}.hbs`) },
-    { name: 'scss', path: path.join('app', 'styles', 'components', `${component}.scss`) },
-    { name: 'css', path: path.join('app', 'styles', 'components', `${component}.css`) },
-    { name: 'integration test', path: path.join('tests', 'integration', 'components', `${component}-test.js`) },
-    { name: 'unit test', path: path.join('tests', 'unit', 'components', `${component}-test.js`) },
-  ]
+console.log(`ensure ${source} exists and is an ember app`);
+const { result: isEmber, missingFiles} = isEmberApp(source.absPath);
+if (isEmber) {
+  console.log('--> passed check'.green);
+} else {
+  console.error(`--> Error: ${source.absPath} is not an ember app. Missing ${missingFiles}`.red);
 }
+
+console.log(`create new addon at ${output}`);
+deleteIfDir(output.path);
+childProcess.execSync(`ember addon ${output.name} --skip-npm`, { cwd: output.parent })
+
+console.log('copy source to source.copyPath for destructive changes');
+repoSafeCopy(source, source.copyPath);
+
+console.log(`extract ${files.map(x => x.name)}`);
+repoFilter(source.copyPath, output, files);
+repoMerge(output, source.copyPath);
