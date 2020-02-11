@@ -68,6 +68,6 @@ if (!isGitRepo(output.path)) {
   console.error(`${source.path} is not git repo.`.red);
 }
 
-log(`extract ${files.map(x => x.name)}`);
+log(`extract ${files.length} files`);
 repoFilter(source.copyPath, output, files);
 repoMerge(output, source.copyPath);
