@@ -13,7 +13,7 @@ const repoSafeCopy = require('./lib/repo-safe-copy');
 
 function usage(message) {
   console.error(`Error: ${message}`.red);
-  console.error('USAGE: ./index [--source <path>] [--component <value>] [--addon-name <value>] [--output <path>] [--config <path>]'.red);
+  console.error('USAGE: ./index [--source <path>] [--component <value>] [--output <path>] [--config <path>]'.red);
 }
 
 function step(message, cb) {
