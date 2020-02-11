@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-env node */
 require('colors');
 const yargs = require('yargs').argv
 const path = require('path');
