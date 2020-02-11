@@ -3,6 +3,7 @@
   "version": "0.4.0",
   "description": "Extract components from Ember app into an Ember addon",
   "main": "index.js",
+  "bin": "./index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "extract": "./index.js",
