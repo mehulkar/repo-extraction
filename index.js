@@ -10,7 +10,7 @@ const deleteIfDir = require('./lib/delete-if');
 const repoFilter = require('./lib/repo-filter');
 const repoMerge = require('./lib/repo-merge');
 const repoSafeCopy = require('./lib/repo-safe-copy');
-const { Source, Target } = require('./lib/models');
+const { SourcePath, Path } = require('./lib/models');
 
 function usage(message) {
   console.error(`Error: ${message}`.red);
@@ -24,7 +24,7 @@ if (!yargs.config) {
 
 const configFilePath = path.resolve(yargs.config);
 if (!fs.existsSync(configFilePath)) {
-  usage(`${configFilePath} does not exist`);
+  usage(`Missing ${configFilePath}`);
   process.exit(1);
 }
 
@@ -36,32 +36,33 @@ const {
   files = []
 } = config;
 
-const source = new Source(sourcePath);
-const output = new Target(outputPath);
-
-if (!source) {
-  usage('Missing source');
-  process.exit(1);
-}
-if (!files.length) {
-  usage('Missing files config');
-  process.exit(1);
-}
-
 if (!output) {
   usage('Missing output');
   process.exit(1);
 }
 
-console.log(`ensure ${source} exists and is an ember app`);
-const { result: isEmber, missingFiles} = isEmberApp(source.absPath);
+if (!source) {
+  usage('Missing source');
+  process.exit(1);
+}
+
+if (!files.length) {
+  usage('Missing files config');
+  process.exit(1);
+}
+
+const source = new SourcePath(sourcePath);
+const output = new Path(outputPath);
+
+console.log(`ensure ${source.path} exists and is an ember app`);
+const { result: isEmber, missingFiles} = isEmberApp(source.path);
 if (isEmber) {
   console.log('--> passed check'.green);
 } else {
-  console.error(`--> Error: ${source.absPath} is not an ember app. Missing ${missingFiles}`.red);
+  console.error(`--> Error: ${source.path} is not an ember app. Missing ${missingFiles}`.red);
 }
 
-console.log(`create new addon at ${output}`);
+console.log(`create new addon at ${output.path}`);
 deleteIfDir(output.path);
 childProcess.execSync(`ember addon ${output.name} --skip-npm`, { cwd: output.parent })
 
