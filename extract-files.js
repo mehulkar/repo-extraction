@@ -6,7 +6,7 @@ const fs = require('fs');
 const childProcess = require('child_process');
 const isGit = require('./lib/is-git');
 const deleteIfDir = require('./lib/delete-if');
-const extractFilesWithHistory = require('./lib/extract-with-history');
+const repoFilter = require('./lib/repo-filter');
 
 function usage(message) {
   console.error(`Error: ${message}`.red);
@@ -96,5 +96,5 @@ if (!filesToExtract.every(x => x.path)) {
 }
 
 step(`extract ${filesToExtract.map(x => x.name)}`, () => {
-  extractFilesWithHistory(sourceCopyPath, output, filesToExtract);
+  repoFilter(sourceCopyPath, output, filesToExtract);
 });

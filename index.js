@@ -6,7 +6,8 @@ const fs = require('fs');
 const childProcess = require('child_process');
 const isEmberApp = require('./lib/is-ember');
 const deleteIfDir = require('./lib/delete-if');
-const extractFilesWithHistory = require('./lib/extract-with-history');
+const repoFilter = require('./lib/repo-filter');
+const repoMerge = require('./lib/repo-merge');
 
 function usage(message) {
   console.error(`Error: ${message}`.red);
@@ -94,7 +95,8 @@ step('copy source to sourceCopyPath for destructive changes', () => {
 });
 
 step(`extract ${filesToExtract.map(x => x.name)}`, () => {
-  extractFilesWithHistory(sourceCopyPath, output, filesToExtract);
+  repoFilter(sourceCopyPath, output, filesToExtract);
+  repoMerge(output, sourceCopyPath);
 });
 
 
