@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /* eslint-env node */
-const yargs = require('yargs').argv
+const yargs = require('yargs').argv;
 const path = require('path');
 const fs = require('fs');
 const { isGitRepo, log } = require('./lib/utils');
@@ -25,11 +25,7 @@ if (!fs.existsSync(configFilePath)) {
 
 const config = JSON.parse(fs.readFileSync(configFilePath));
 
-const {
-  source: sourcePath,
-  output: outputPath,
-  files = []
-} = config;
+const { source: sourcePath, output: outputPath, files = [] } = config;
 
 if (!outputPath) {
   usage('Missing output');
@@ -65,5 +61,5 @@ if (!isGitRepo(output.path)) {
 }
 
 log(`extract ${files.length} files`);
-repoUtils.filter(source.copyPath, output, files);
+repoUtils.filter(source.copyPath, files);
 repoUtils.merge(output, source.copyPath);
