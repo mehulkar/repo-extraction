@@ -50,7 +50,7 @@ const source = new SourcePath(sourcePath);
 const output = new Path(outputPath);
 
 log('copy source for destructive changes');
-repoUtils.safeCopy(source, source.copyPath);
+repoUtils.safeCopy(source.path, source.copyPath);
 
 log(`ensure ${source.path} is a git repo`);
 if (!isGitRepo(source.path)) {
