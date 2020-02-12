@@ -31,12 +31,12 @@ const {
   files = []
 } = config;
 
-if (!output) {
+if (!outputPath) {
   usage('Missing output');
   process.exit(1);
 }
 
-if (!source) {
+if (!sourcePath) {
   usage('Missing source');
   process.exit(1);
 }
@@ -48,7 +48,6 @@ if (!files.length) {
 
 const source = new SourcePath(sourcePath);
 const output = new Path(outputPath);
-
 
 log('copy source for destructive changes');
 repoUtils.safeCopy(source, source.copyPath);
