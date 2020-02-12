@@ -60,6 +60,9 @@ if (!isGitRepo(output.path)) {
   process.exit(1);
 }
 
-log(`extract ${files.length} files`);
-repoUtils.filter(source.copyPath, files);
-repoUtils.merge(output.path, source.copyPath);
+try {
+  repoUtils.filter(source.copyPath, files);
+  repoUtils.merge(output.path, source.copyPath);
+} catch (e) {
+  log(e.message || e, 'error');
+}
