@@ -8,13 +8,7 @@ A tool to extract code out of a repo.
 npx @apple/repo-extraction --config <path>
 ```
 
-### Example
-
-```bash
-npm run extract -- --source ../tmp-extraction-playground/test-app --component foo-bar
-```
-
-#### Config
+### Config
 
 Should be a JSON file with the following structure:
 
