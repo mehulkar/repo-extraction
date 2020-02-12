@@ -48,9 +48,9 @@ const output = new Path(outputPath);
 log('copy source for destructive changes');
 repoUtils.safeCopy(source.path, source.copyPath);
 
-log(`ensure ${source.path} is a git repo`);
-if (!isGitRepo(source.path)) {
-  log(`${source.path} is not git repo`, 'error');
+log(`ensure ${source.copyPath} is a git repo`);
+if (!isGitRepo(source.copyPath)) {
+  log(`${source.copyPath} is not git repo`, 'error');
   process.exit(1);
 }
 
