@@ -1,6 +1,6 @@
 {
   "name": "@apple/repo-extraction",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Extract components from Ember app into an Ember addon",
   "main": "index.js",
   "bin": "./index.js",
