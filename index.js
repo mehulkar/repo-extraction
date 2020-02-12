@@ -62,4 +62,4 @@ if (!isGitRepo(output.path)) {
 
 log(`extract ${files.length} files`);
 repoUtils.filter(source.copyPath, files);
-repoUtils.merge(output, source.copyPath);
+repoUtils.merge(output.path, source.copyPath);
