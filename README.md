@@ -26,3 +26,8 @@ Should be a JSON file with the following structure:
 ```
 
 `files` should be a relative path within the source directory, omitting the `./`.
+
+**Notes**:
+
+1. If a git repo isn't found at `output`, it'll unsafely delete that path and create a new directory there
+1. Full history of all files will be collected, including renames
