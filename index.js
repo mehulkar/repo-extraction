@@ -57,7 +57,6 @@ if (!isGitRepo(source.copyPath)) {
 if (!isGitRepo(output.path)) {
   log(`${output.path} is not git repo. Creating`, 'warn');
   repoUtils.create(output.path);
-  process.exit(1);
 }
 
 try {
