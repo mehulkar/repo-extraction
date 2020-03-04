@@ -20,7 +20,7 @@
   "keywords": [
     "ember"
   ],
-  "author": "Mehul Kar",
+  "author": "Mehul Kar <mehulkar@apple.com>",
   "license": "ISC",
   "dependencies": {
     "colors": "^1.3.3",
