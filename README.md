@@ -5,7 +5,7 @@ A tool to extract code out of a repo.
 ## Usage
 
 ```bash
-npx @apple/repo-extraction --config <path>
+npx @apple/repo-extraction extract --config <path>
 ```
 
 ### Config
@@ -16,6 +16,9 @@ Should be a JSON file with the following structure:
 {
   "source": "/some/path",
   "output": "/some/path/for/new/addon",
+  "dirs": [
+    "app/sub"
+  ],
   "files": [
     "app/sub/file1",
     "app/sub/file2",

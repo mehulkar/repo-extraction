@@ -5,6 +5,7 @@ const fs = require('fs');
 const { isGitRepo, log } = require('../../lib/utils');
 const repoUtils = require('../../lib/repo');
 const { SourcePath, Path } = require('../../lib/models');
+const getDirFiles = require('../../lib/get-dir-files');
 
 function usage(message) {
   log(`Error: ${message}`, 'error');
@@ -28,7 +29,7 @@ module.exports.builder = function(yargs) {
 module.exports.handler = async function(argv) {
   const config = JSON.parse(fs.readFileSync(argv.config));
 
-  const { source: sourcePath, output: outputPath, files = [] } = config;
+  const { source: sourcePath, output: outputPath } = config;
 
   if (!outputPath) {
     usage('Missing output');
@@ -40,10 +41,28 @@ module.exports.handler = async function(argv) {
     process.exit(1);
   }
 
-  if (!files.length) {
-    usage('Missing files config');
+  let files = config.files || [];
+
+  if (!files.length && !config.dirs) {
+    usage('Need to pass files or dir config');
     process.exit(1);
   }
+
+  let filesInDir = await getDirFiles(
+    config.dirs.map(x => path.join(sourcePath, x)) // path.join to get absolute path so we can read-dir
+  );
+
+  // Undo the path.join we added before
+  let regexStr = `^${sourcePath}`;
+  if (!sourcePath.endsWith('/')) {
+    regexStr += '/';
+  }
+
+  filesInDir = filesInDir.map(f => f.replace(new RegExp(regexStr), ''));
+
+  const allFiles = Array.from(new Set([...files, ...filesInDir]));
+
+  log(`${allFiles.length} files to extract`);
 
   const source = new SourcePath(sourcePath);
   const output = new Path(outputPath);
@@ -63,7 +82,7 @@ module.exports.handler = async function(argv) {
   }
 
   try {
-    repoUtils.filter(source.copyPath, files);
+    repoUtils.filter(source.copyPath, allFiles);
     repoUtils.merge(output.path, source.copyPath);
   } catch (e) {
     log(e.message || e, 'error');
